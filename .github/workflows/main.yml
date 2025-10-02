@@ -1,0 +1,40 @@
+# Nome do nosso pipeline de CI/CD
+name: Salesforce CI/CD - Validate and Deploy
+
+# Aciona o workflow sempre que houver um push para o branch 'main'
+on:
+  push:
+    branches:
+      - main
+
+# Define as tarefas que serão executadas
+jobs:
+  validate_and_test:
+    name: Validação e Teste
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout: Baixa o código do seu repositório
+      - uses: actions/checkout@v4
+
+      # 2. Configura o SFDX: Usa a action oficial da Salesforce para configurar o ambiente
+      - name: 'Instalar e Configurar o Salesforce CLI'
+        uses: sfdx-actions/setup-sfdx@v1
+
+      # 3. Autoriza a Org (Usando JWT para autenticação segura)
+      - name: 'Autorizar Org de Desenvolvimento'
+        # O GitHub Secrets injeta o valor da chave aqui, criando um arquivo temporário
+        run: echo "${{ secrets.JWT_PRIVATE_KEY }}" > ./server.key
+        
+      - name: 'Conectar Org via JWT'
+        run: sfdx auth:jwt:grant --clientid ${{ secrets.CONNECTED_APP_CONSUMER_KEY }} --jwtkeyfile ./server.key --username ${{ secrets.SALESFORCE_USERNAME }} --instanceurl https://login.salesforce.com --setdefaultusername
+
+      # 4. Validação com Execução de Testes (Obrigatório para deploy)
+      - name: 'Validação e Execução de Testes na Org'
+        # O --checkonly garante que nada seja implantado se os testes falharem
+        run: sfdx project:deploy start --check-only --target-org ${{ secrets.SALESFORCE_USERNAME }} --source-dir force-app --test-level RunSpecifiedTests --specified-tests TestVehicleService 
+
+      # 5. Implantação Final (Só se a validação passar)
+      - name: 'Deploy Final do Código'
+        # Só executa se o passo anterior (validação) for bem-sucedido
+        if: success()
+        run: sfdx project:deploy start --target-org ${{ secrets.SALESFORCE_USERNAME }} --source-dir force-app
