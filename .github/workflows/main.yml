@@ -31,7 +31,7 @@ jobs:
       # 4. Validação com Execução de Testes (Obrigatório para deploy)
       - name: 'Validação e Execução de Testes na Org'
         # O --checkonly garante que nada seja implantado se os testes falharem
-        run: sfdx project:deploy start --check-only --target-org ${{ secrets.SALESFORCE_USERNAME }} --source-dir force-app --test-level RunSpecifiedTests --specified-tests TestVehicleService 
+        run: sfdx project:deploy start --check-only --target-org ${{ secrets.SALESFORCE_USERNAME }} --source-dir force-app --test-level RunLocalTests
 
       # 5. Implantação Final (Só se a validação passar)
       - name: 'Deploy Final do Código'
