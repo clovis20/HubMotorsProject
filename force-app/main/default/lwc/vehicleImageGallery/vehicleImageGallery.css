@@ -1,0 +1,23 @@
+.image-container {
+    max-width: 100%;
+    overflow: hidden;
+    height: 300px; /* Altura fixa para o Highlights Panel */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem preencha o container sem distorcer */
+}
+
+.no-image-placeholder {
+    border: 1px dashed #ccc;
+    background-color: #f7f9fb;
+    border-radius: 4px;
+    color: #706e6b;
+}

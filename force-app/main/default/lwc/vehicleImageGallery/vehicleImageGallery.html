@@ -1,0 +1,15 @@
+<template>
+    <div class="slds-m-around_medium slds-text-align_center">
+        <template if:true={isImageFound}>
+            <div class="image-container">
+                <img src={imageUrl} alt="Vehicle Main Photo" class="main-image"/>
+            </div>
+        </template>
+        <template if:false={isImageFound}>
+            <div class="no-image-placeholder slds-p-around_large">
+                <lightning-icon icon-name="utility:image" size="large"></lightning-icon>
+                <p class="slds-text-heading_small slds-m-top_small">No Vehicle Photo Uploaded</p>
+            </div>
+        </template>
+    </div>
+</template>
