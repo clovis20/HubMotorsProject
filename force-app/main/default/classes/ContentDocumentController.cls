@@ -7,9 +7,14 @@ public with sharing class ContentDocumentController {
         @AuraEnabled public String thumbnailUrl;
 
         public FileWrapper(ContentDocumentLink cdl, ContentVersion cv) {
+            // 1. Obter o URL Base do Salesforce
+            String baseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+            
             this.contentDocumentId = cdl.ContentDocumentId;
             this.title = cv.Title;
-            this.thumbnailUrl = '/sfc/servlet.shepherd/version/rendition?rendition=THUMB720BY480&versionId=' + cv.Id;
+            
+            // 2. Construir o URL COMPLETO para a miniatura
+            this.thumbnailUrl = baseUrl + '/sfc/servlet.shepherd/version/rendition?rendition=THUMB720BY480&versionId=' + cv.Id;
         }
     }
 
