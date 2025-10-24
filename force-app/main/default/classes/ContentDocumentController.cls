@@ -1,16 +1,18 @@
-public class FileWrapper {
-    @AuraEnabled public String contentDocumentId;
-    @AuraEnabled public String title;
-    @AuraEnabled public String thumbnailUrl;
-
-    public FileWrapper(ContentDocumentLink cdl, ContentVersion cv) {
-        this.contentDocumentId = cdl.ContentDocumentId;
-        this.title = cv.Title;
-        this.thumbnailUrl = '/sfc/servlet.shepherd/version/rendition?rendition=THUMB720BY480&versionId=' + cv.Id;
-    }
-}
-
 public with sharing class ContentDocumentController {
+
+    // Inner wrapper class used to return simplified file metadata to the client (LWC/Flow)
+    public class FileWrapper {
+        @AuraEnabled public String contentDocumentId;
+        @AuraEnabled public String title;
+        @AuraEnabled public String thumbnailUrl;
+
+        public FileWrapper(ContentDocumentLink cdl, ContentVersion cv) {
+            this.contentDocumentId = cdl.ContentDocumentId;
+            this.title = cv.Title;
+            this.thumbnailUrl = '/sfc/servlet.shepherd/version/rendition?rendition=THUMB720BY480&versionId=' + cv.Id;
+        }
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<FileWrapper> getRelatedFiles(String recordId) {
         List<FileWrapper> fileList = new List<FileWrapper>();
