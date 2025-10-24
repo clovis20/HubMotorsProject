@@ -11,28 +11,5 @@
                 <p class="slds-text-heading_small slds-m-top_small">No Vehicle Photo Uploaded</p>
             </div>
         </template>
-
-        <!-- Album thumbnails -->
-        <template if:true={images}>
-            <div class="slds-m-top_medium">
-                <div class="slds-grid slds-wrap slds-grid_pull-padded">
-                    <template for:each={images} for:item="img">
-                        <div key={img.contentDocumentId} class="slds-p-horizontal_x-small slds-size_1-of-3 slds-medium-size_1-of-6">
-                            <div class="thumb-card slds-box slds-theme_default slds-align_absolute-center" data-selected={img.isPrimary}>
-                                <img src={img.thumbUrl} alt={img.title} class="thumb-image"/>
-                                <template if:true={img.isPrimary}>
-                                    <div class="cover-badge">Capa</div>
-                                </template>
-                                <div class="slds-m-top_x-small">
-                                    <button data-docid={img.contentDocumentId} class="slds-button slds-button_neutral" onclick={handleSetPrimary}>
-                                        Set as Cover
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </div>
-        </template>
     </div>
 </template>

@@ -84,30 +84,4 @@ private class TestVehicleService {
         // ASSERT: Verifica se o resultado é nulo.
         System.assertEquals(null, resultId, 'O método deve retornar null quando a ID de entrada for nula.');
     }
-
-    @IsTest
-    static void testSetPrimaryVehicleImage() {
-        // Cria veículo e anexo
-        Id vehicleId = setupTestData(true);
-
-        // Recupera um ContentDocument vinculado
-        List<ContentDocumentLink> links = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :vehicleId LIMIT 1];
-        System.assert(!links.isEmpty(), 'Deve haver ao menos 1 ContentDocumentLink');
-        Id cdId = links[0].ContentDocumentId;
-
-        // Define como imagem principal
-        Test.startTest();
-        Boolean ok = VehicleService.setPrimaryVehicleImage(vehicleId, cdId);
-        Test.stopTest();
-
-        System.assertEquals(true, ok, 'setPrimaryVehicleImage deve retornar true quando bem sucedido');
-
-        // Verifica se o campo foi gravado no Vehicle__c
-        Vehicle__c v = [SELECT Primary_Image_Document_Id__c FROM Vehicle__c WHERE Id = :vehicleId LIMIT 1];
-        System.assertEquals(cdId, v.Primary_Image_Document_Id__c, 'O campo Primary_Image_Document_Id__c deve conter o ContentDocumentId definido');
-
-        // E o getVehicleImageId deve retornar esse mesmo id
-        String returned = VehicleService.getVehicleImageId(vehicleId);
-        System.assertEquals(cdId, returned, 'getVehicleImageId deve priorizar o campo Primary_Image_Document_Id__c');
-    }
 }
