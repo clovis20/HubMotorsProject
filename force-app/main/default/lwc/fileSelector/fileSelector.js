@@ -2,8 +2,8 @@ import { LightningElement, api, wire } from 'lwc';
 import getRelatedFiles from '@salesforce/apex/ContentDocumentController.getRelatedFiles';
 
 export default class FileSelector extends LightningElement {
-    @api recordId; // Recebe o ID do Flow/Página de Registro
-    @api selectedFileId = ''; // Variável de saída para o Flow
+    @api recordId;
+    @api selectedFileId = ''; // Variável de Saída
     files;
     error;
 
@@ -21,14 +21,17 @@ export default class FileSelector extends LightningElement {
 
     handleSelection(event) {
         const selectedId = event.currentTarget.dataset.fileId;
+        
+        // Atualiza a variável de saída
         this.selectedFileId = selectedId;
-
+        
+        // Adiciona classe CSS para destaque (como planejado)
         this.template.querySelectorAll('.file-card').forEach(card => {
             card.classList.remove('selected-card');
         });
         event.currentTarget.classList.add('selected-card');
 
-        // Notify Flow that output property changed
+        // Dispara evento para o Flow
         this.dispatchEvent(new CustomEvent('change'));
     }
 
