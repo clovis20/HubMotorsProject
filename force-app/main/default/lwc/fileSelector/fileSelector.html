@@ -1,0 +1,50 @@
+<template>
+    <lightning-card title="Escolher Imagem Principal">
+        <template if:true={error}>
+            <div class="slds-box slds-text-color_error">
+                Erro: {error}
+            </div>
+        </template>
+        
+        <template if:true={files}>
+            <template if:false={files.length}>
+                <div class="slds-p-around_medium">
+                    Nenhum arquivo encontrado para este registro.
+                </div>
+            </template>
+        </template>
+
+        <div class="slds-grid slds-wrap slds-p-around_small">
+            <template for:each={files} for:item="file">
+                <div key={file.contentDocumentId} class="slds-col slds-size_1-of-4 slds-p-around_xx-small">
+                    <div 
+                        class="file-card slds-p-around_x-small"
+                        data-file-id={file.contentDocumentId}
+                        onclick={handleSelection}>
+                        
+                        <img 
+                            src={file.thumbnailUrl} 
+                            alt={file.title} 
+                            class="file-thumbnail"
+                            loading="lazy" />
+                        
+                        <p class="slds-truncate slds-text-align_center slds-text-title_small slds-p-top_xx-small" title={file.title}>
+                            {file.title}
+                        </p>
+                        
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <p class="slds-p-around_small">
+            <template if:true={isFileSelected}>
+                ID Selecionado: {selectedFileId}
+            </template>
+            <template if:false={isFileSelected}>
+                * Por favor, clique em uma imagem para selecionar.
+            </template>
+        </p>
+
+    </lightning-card>
+</template>
