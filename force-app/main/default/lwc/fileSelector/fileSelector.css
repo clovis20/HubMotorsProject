@@ -1,22 +1,44 @@
+.file-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
 .file-card {
-    border: 3px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--lwc-colorBorderInput, #dddbda);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-in-out;
+    width: 180px; /* Largura da célula */
+    height: 150px; /* Altura da célula */
 }
 
 .file-card:hover {
-    border-color: #0070d2;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-color: var(--lwc-colorBorderBrand, #0070d2);
+    box-shadow: 0 0 5px rgba(0, 112, 210, 0.5);
 }
 
-.selected-card {
-    border-color: #2a9b3d;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+.file-card.selected-card {
+    border: 3px solid var(--lwc-colorBorderSuccess, #4bca81); /* Borda verde de sucesso */
+    box-shadow: 0 0 8px rgba(75, 202, 129, 0.8);
 }
 
 .file-thumbnail {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 4px;
+    /* **ATENÇÃO: Redimensionamento da Imagem Original** */
+    width: 100%; /* Ocupa 100% da largura do .file-card */
+    max-height: 100px; /* Altura máxima para caber na célula */
+    object-fit: contain; /* Garante que a imagem se ajuste sem distorcer, mantendo a proporção */
+    border-radius: 0.25rem;
+}
+
+.file-title {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--lwc-colorTextDefault, #181818);
+    word-break: break-word;
 }

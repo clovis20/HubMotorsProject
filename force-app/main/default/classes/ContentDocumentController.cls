@@ -1,31 +1,26 @@
 public with sharing class ContentDocumentController {
 
-    // Classe de Invólucro (Wrapper)
     public class FileWrapper {
         @AuraEnabled public String contentDocumentId;
         @AuraEnabled public String title;
-        @AuraEnabled public String thumbnailUrl;
+        @AuraEnabled public String thumbnailUrl; // Agora conterá o URL de DOWNLOAD
 
         public FileWrapper(ContentDocumentLink cdl, ContentVersion cv) {
-            // 1. Obter o URL Base do Domínio da Organização (Ex: .my.salesforce.com)
+            
+            // 1. Obter o URL Base do Domínio de Arquivo (Correção para o domínio cruzado)
             String baseUrl = URL.getOrgDomainUrl().toExternalForm(); 
+            String fileDomainUrl = baseUrl.replace('.my.salesforce.com', '.trailblaze.file.force.com')
+                                          .replace('.lightning.force.com', '.trailblaze.file.force.com');
             
-            // 2. CORREÇÃO DE DOMÍNIO: Substituir o domínio principal pelo domínio de Arquivo
-            // O domínio de arquivo correto na sua org é 'trailblaze.file.force.com' (visto na imagem)
-            // Usamos a versão .my.salesforce.com como referência.
-            // Se getOrgDomainUrl() retornar o domínio principal de Lightning, vamos trocá-lo.
-            
-            // Exemplo da substituição de parte do URL para obter o domínio de arquivo:
-            // Isso garante que a URL seja como https://seudominio.trailblaze.file.force.com
-            String fileDomainUrl = baseUrl.replace('.lightning.force.com', '.file.force.com')
-                                          .replace('my.salesforce.com', 'file.force.com');
-
             this.contentDocumentId = cdl.ContentDocumentId;
             this.title = cv.Title;
             
-            // 3. Construir o URL COMPLETO para a miniatura (rendition)
-            // O caminho '/sfc/servlet.shepherd/version/rendition' é o caminho correto para renderização.
-            this.thumbnailUrl = fileDomainUrl + '/sfc/servlet.shepherd/version/rendition?rendition=THUMB720BY480&versionId=' + cv.Id;
+            // 2. CONSTRUÇÃO FINAL DA URL: USANDO O DOWNLOAD DO ARQUIVO ORIGINAL (FUNCIONALIDADE GARANTIDA)
+            // Usa o ID da ContentVersion para o download
+            this.thumbnailUrl = fileDomainUrl 
+                + '/sfc/servlet.shepherd/version/download/' + cv.Id 
+                + '?operationContext=DETAIL'
+                + '&contentId=' + cdl.ContentDocumentId;
         }
     }
 

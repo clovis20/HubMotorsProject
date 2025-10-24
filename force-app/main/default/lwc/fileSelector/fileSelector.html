@@ -1,26 +1,16 @@
 <template>
-    <lightning-card title="Escolher Imagem Principal">
-        <template if:true={error}>
-            <div class="slds-box slds-text-color_error">
-                Erro: {error}
-            </div>
-        </template>
+    <div class="slds-box">
+        <h2 class="slds-text-heading_small slds-var-m-bottom_medium">Escolher Imagem Principal</h2>
         
-        <template if:true={files}>
-            <template if:false={files.length}>
-                <div class="slds-p-around_medium">
-                    Nenhum arquivo encontrado para este registro.
-                </div>
-            </template>
-        </template>
-
-        <div class="slds-grid slds-wrap slds-p-around_small">
-            <template for:each={files} for:item="file">
-                <div key={file.contentDocumentId} class="slds-col slds-size_1-of-4 slds-p-around_xx-small">
+        <div class="file-gallery">
+            <template if:true={files}>
+                <template for:each={files} for:item="file">
+                    
                     <div 
-                        class="file-card slds-p-around_x-small"
+                        key={file.contentDocumentId} 
                         data-file-id={file.contentDocumentId}
-                        onclick={handleSelection}>
+                        onclick={handleSelection}
+                        class="file-card slds-align_absolute-center">
                         
                         <img 
                             src={file.thumbnailUrl} 
@@ -28,23 +18,17 @@
                             class="file-thumbnail"
                             loading="lazy" />
                         
-                        <p class="slds-truncate slds-text-align_center slds-text-title_small slds-p-top_xx-small" title={file.title}>
-                            {file.title}
-                        </p>
+                        <p class="file-title slds-var-m-top_x-small">{file.title}</p>
                         
                     </div>
-                </div>
+                </template>
+            </template>
+            <template if:true={error}>
+                <p class="slds-text-color_error">Ocorreu um erro ao carregar os arquivos: {error}</p>
             </template>
         </div>
 
-        <p class="slds-p-around_small">
-            <template if:true={isFileSelected}>
-                ID Selecionado: {selectedFileId}
-            </template>
-            <template if:false={isFileSelected}>
-                * Por favor, clique em uma imagem para selecionar.
-            </template>
-        </p>
-
-    </lightning-card>
+        <p class="slds-text-body_small slds-var-m-top_medium">* Por favor, clique em uma imagem para selecionar.</p>
+        
+        </div>
 </template>
