@@ -21,8 +21,8 @@ export default class VehicleImageGallery extends LightningElement {
     }
 
     // Propriedade getter que constrói a URL de visualização/download do arquivo
-    get imageUrl() {
-        // A URL segue o padrão: /sfc/servlet.shepherd/document/download/{ContentDocumentId}
-        return this.vehicleImageId ? `/sfc/servlet.shepherd/document/download/${this.vehicleImageId}` : null;
-    }
+get imageUrl() {
+    // Mantemos o caminho /document/download/ que funciona com ContentDocumentId
+    return this.vehicleImageId ? `/sfc/servlet.shepherd/document/download/${this.vehicleImageId}` : null;
+}
 }

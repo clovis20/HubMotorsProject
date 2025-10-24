@@ -1,25 +1,25 @@
 public with sharing class ContentDocumentController {
 
+    // Inner wrapper class used to return simplified file metadata to the client (LWC/Flow)
     public class FileWrapper {
         @AuraEnabled public String contentDocumentId;
         @AuraEnabled public String title;
-        @AuraEnabled public String thumbnailUrl; // Agora conterá o URL de DOWNLOAD
+        @AuraEnabled public String thumbnailUrl; // Contém o caminho RELATIVO de DOWNLOAD
 
         public FileWrapper(ContentDocumentLink cdl, ContentVersion cv) {
             
-            // 1. Obter o URL Base do Domínio de Arquivo (Correção para o domínio cruzado)
-            String baseUrl = URL.getOrgDomainUrl().toExternalForm(); 
-            String fileDomainUrl = baseUrl.replace('.my.salesforce.com', '.trailblaze.file.force.com')
-                                          .replace('.lightning.force.com', '.trailblaze.file.force.com');
+            // 1. CORREÇÃO FINAL: Usamos o caminho RELATIVO.
+            // O Framework Lightning resolverá o host automaticamente para o caminho do arquivo.
             
             this.contentDocumentId = cdl.ContentDocumentId;
             this.title = cv.Title;
             
-            // 2. CONSTRUÇÃO FINAL DA URL: USANDO O DOWNLOAD DO ARQUIVO ORIGINAL (FUNCIONALIDADE GARANTIDA)
-            // Usa o ID da ContentVersion para o download
-            this.thumbnailUrl = fileDomainUrl 
-                + '/sfc/servlet.shepherd/version/download/' + cv.Id 
-                + '?operationContext=DETAIL'
+            // 2. CONSTRUÇÃO DO CAMINHO RELATIVO:
+            // Usamos o caminho de download que funcionou (renditionDownload)
+            // Note que NÃO há mais a lógica URL.getOrgDomainUrl()
+            this.thumbnailUrl = '/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_Png'
+                + '&versionId=' + cv.Id
+                + '&operationContext=CHATTER' // Mantemos o contexto do link funcional
                 + '&contentId=' + cdl.ContentDocumentId;
         }
     }
@@ -31,6 +31,7 @@ public with sharing class ContentDocumentController {
 
         Set<Id> contentDocumentIds = new Set<Id>();
 
+        // Busca o ContentDocumentLink (relacionamento do arquivo com o registro)
         List<ContentDocumentLink> links = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink
@@ -45,6 +46,7 @@ public with sharing class ContentDocumentController {
             contentDocumentIds.add(cdl.ContentDocumentId);
         }
 
+        // Busca a ContentVersion mais recente
         Map<Id, ContentVersion> latestVersions = new Map<Id, ContentVersion>();
         for (ContentVersion cv : [
             SELECT Id, ContentDocumentId, Title, FileType
@@ -54,6 +56,7 @@ public with sharing class ContentDocumentController {
             latestVersions.put(cv.ContentDocumentId, cv);
         }
 
+        // Constrói a lista final de Wrappers
         for (ContentDocumentLink cdl : links) {
             ContentVersion cv = latestVersions.get(cdl.ContentDocumentId);
             if (cv != null) {
